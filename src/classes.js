@@ -26,4 +26,8 @@ class Gameboard {
     }
     return board;
   }
+  receiveAttack(y, x) {
+    if (this.hitMarks[y][x]) return;
+    this.hitMarks[y][x] = true;
+  }
 }
