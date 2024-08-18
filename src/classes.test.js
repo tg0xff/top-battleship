@@ -9,3 +9,9 @@ describe("Test Ship", () => {
     expect(ship.isSunk()).toBe(true);
   });
 });
+
+test("Gameboard.receiveAttack()", () => {
+  const board = new Gameboard();
+  board.receiveAttack(9, 9);
+  expect(board.hitMarks[9][9]).toBe(true);
+});
