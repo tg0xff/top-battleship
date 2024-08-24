@@ -15,11 +15,11 @@ class Ship {
 class Gameboard {
   constructor() {
     this.ships = [];
-    this.shipIndexBoard = this.#makeBoardArray(-1);
-    this.hitMarks = this.#makeBoardArray(false);
+    this.shipIndexBoard = this.makeBoardArray(-1);
+    this.hitMarks = this.makeBoardArray(false);
     this.populateBoard();
   }
-  #makeBoardArray(initVal) {
+  makeBoardArray(initVal) {
     const board = [];
     for (let y = 0; x < 10; x++) {
       const row = [];
