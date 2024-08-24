@@ -46,28 +46,42 @@ class Gameboard {
       return square === -1 || square === undefined;
     }
 
-    function areAdjacentSquaresEmpty(ship) {
+    function areAdjacentSquaresEmpty(y, x) {
       // Check every adjacent square in clockwise direction.
       return (
-        isSquareEmpty(this.shipIndexBoard[ship.y - 1][ship.x]) &&
-        isSquareEmpty(this.shipIndexBoard[ship.y - 1][ship.x + 1]) &&
-        isSquareEmpty(this.shipIndexBoard[ship.y][ship.x + 1]) &&
-        isSquareEmpty(this.shipIndexBoard[ship.y + 1][ship.x + 1]) &&
-        isSquareEmpty(this.shipIndexBoard[ship.y + 1][ship.x]) &&
-        isSquareEmpty(this.shipIndexBoard[ship.y + 1][ship.x - 1]) &&
-        isSquareEmpty(this.shipIndexBoard[ship.y][ship.x - 1]) &&
-        isSquareEmpty(this.shipIndexBoard[ship.y - 1][ship.x - 1])
+        isSquareEmpty(this.shipIndexBoard[y - 1][x]) &&
+        isSquareEmpty(this.shipIndexBoard[y - 1][x + 1]) &&
+        isSquareEmpty(this.shipIndexBoard[y][x + 1]) &&
+        isSquareEmpty(this.shipIndexBoard[y + 1][x + 1]) &&
+        isSquareEmpty(this.shipIndexBoard[y + 1][x]) &&
+        isSquareEmpty(this.shipIndexBoard[y + 1][x - 1]) &&
+        isSquareEmpty(this.shipIndexBoard[y][x - 1]) &&
+        isSquareEmpty(this.shipIndexBoard[y - 1][x - 1])
       );
     }
 
-    function checkSquaresRecursively(ship, n) {
-      if (n > ship.length) return true;
-      return (
-        areAdjacentSquaresEmpty(ship) && checkSquaresRecursively(ship, n + 1)
-      );
+    function getRecursiveSqrsFn(ship) {
+      function horizontal(ship, n) {
+        if (n > ship.length) return true;
+        return (
+          areAdjacentSquaresEmpty(ship.y, ship.x + n) &&
+          horizontal(ship, n + 1)
+        );
+      }
+
+      function vertical(ship, n) {
+        if (n > ship.length) return true;
+        return (
+          areAdjacentSquaresEmpty(ship.y + n, ship.x) &&
+          vertical(ship, n + 1)
+        );
+      }
+
+      return ship.orientation === "horizontal" ? horizontal : vertical;
     }
 
-    return checkSquaresRecursively(ship, 0);
+    const checkSqrsRecursively = getRecursiveSqrsFn(ship);
+    return checkSqrsRecursively(ship, 0);
   }
   populateBoard() {
     const shipLengths = [5, 4, 3, 3, 2];
