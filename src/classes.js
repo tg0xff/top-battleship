@@ -34,6 +34,41 @@ class Gameboard {
     if (this.hitMarks[y][x]) return;
     this.hitMarks[y][x] = true;
   }
+  canBePlaced(ship) {
+    if (
+      this.shipIndexBoard[ship.y][ship.x] !== -1 ||
+      (ship.orientation === "horizontal" ? ship.x : ship.y) + ship.length > 10
+    ) {
+      return false;
+    }
+
+    function isSquareEmpty(square) {
+      return square === -1 || square === undefined;
+    }
+
+    function areAdjacentSquaresEmpty(ship) {
+      // Check every adjacent square in clockwise direction.
+      return (
+        isSquareEmpty(this.shipIndexBoard[ship.y - 1][ship.x]) &&
+        isSquareEmpty(this.shipIndexBoard[ship.y - 1][ship.x + 1]) &&
+        isSquareEmpty(this.shipIndexBoard[ship.y][ship.x + 1]) &&
+        isSquareEmpty(this.shipIndexBoard[ship.y + 1][ship.x + 1]) &&
+        isSquareEmpty(this.shipIndexBoard[ship.y + 1][ship.x]) &&
+        isSquareEmpty(this.shipIndexBoard[ship.y + 1][ship.x - 1]) &&
+        isSquareEmpty(this.shipIndexBoard[ship.y][ship.x - 1]) &&
+        isSquareEmpty(this.shipIndexBoard[ship.y - 1][ship.x - 1])
+      );
+    }
+
+    function checkSquaresRecursively(ship, n) {
+      if (n > ship.length) return true;
+      return (
+        areAdjacentSquaresEmpty(ship) && checkSquaresRecursively(ship, n + 1)
+      );
+    }
+
+    return checkSquaresRecursively(ship, 0);
+  }
   populateBoard() {
     const shipLengths = [5, 4, 3, 3, 2];
     for (let i = 0; i < shipLengths.length; i++) {
