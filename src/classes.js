@@ -115,8 +115,8 @@ class Gameboard {
 }
 
 class Player {
-  constructor(isCPU, Ship, Gameboard) {
-    this.type = isCPU ? "cpu" : "player";
+  constructor(isHuman, Ship, Gameboard) {
+    this.type = isHuman ? "player" : "cpu";
     this.gameboard = new Gameboard(Ship);
   }
 }
