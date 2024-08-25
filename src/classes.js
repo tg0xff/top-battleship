@@ -71,16 +71,14 @@ class Gameboard {
       function horizontal(ship, n) {
         if (n > ship.length) return true;
         return (
-          areAdjacentSquaresEmpty(ship.y, ship.x + n) &&
-          horizontal(ship, n + 1)
+          areAdjacentSquaresEmpty(ship.y, ship.x + n) && horizontal(ship, n + 1)
         );
       }
 
       function vertical(ship, n) {
         if (n > ship.length) return true;
         return (
-          areAdjacentSquaresEmpty(ship.y + n, ship.x) &&
-          vertical(ship, n + 1)
+          areAdjacentSquaresEmpty(ship.y + n, ship.x) && vertical(ship, n + 1)
         );
       }
 
