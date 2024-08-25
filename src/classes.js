@@ -2,7 +2,7 @@ class Ship {
   constructor(length) {
     this.length = length;
     this.hits = 0;
-    this.orientation = Math.random > 0.5 ? "horizontal" : "vertical";
+    this.orientation = Math.random() > 0.5 ? "horizontal" : "vertical";
   }
   hit() {
     this.hits++;
