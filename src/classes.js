@@ -15,6 +15,7 @@ class Ship {
 class Gameboard {
   constructor() {
     this.ships = [];
+    this.shipCount = 5;
     this.shipIndexBoard = this.makeBoardArray(-1);
     this.hitMarks = this.makeBoardArray(false);
     this.populateBoard();
@@ -33,6 +34,11 @@ class Gameboard {
   receiveAttack(y, x) {
     if (this.hitMarks[y][x]) return;
     this.hitMarks[y][x] = true;
+    const shipIndex = this.shipIndexBoard[y][x];
+    this.ships[shipIndex].hit();
+    if (this.ships[shipIndex].isSunk()) {
+      this.shipCount--;
+    }
   }
   canBePlaced(ship) {
     if (
