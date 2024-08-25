@@ -13,7 +13,8 @@ class Ship {
 }
 
 class Gameboard {
-  constructor() {
+  constructor(Ship) {
+    this.Ship = Ship;
     this.ships = [];
     this.shipCount = 5;
     this.shipIndexBoard = this.makeBoardArray(-1);
@@ -105,7 +106,7 @@ class Gameboard {
   populateBoard() {
     const shipLengths = [5, 4, 3, 3, 2];
     for (let i = 0; i < shipLengths.length; i++) {
-      const ship = new Ship(shipLengths[i]);
+      const ship = new this.Ship(shipLengths[i]);
       do {
         ship.x = Math.floor(Math.random() * 10);
         ship.y = Math.floor(Math.random() * 10);
