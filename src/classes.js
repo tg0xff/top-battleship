@@ -40,6 +40,9 @@ class Gameboard {
     if (this.ships[shipIndex].isSunk()) {
       this.shipCount--;
     }
+    if (this.shipCount === 0) {
+      return "gameover";
+    }
   }
   canBePlaced(ship) {
     if (
