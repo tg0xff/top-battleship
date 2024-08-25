@@ -83,6 +83,19 @@ class Gameboard {
     const checkSqrsRecursively = getRecursiveSqrsFn(ship);
     return checkSqrsRecursively(ship, 0);
   }
+  placeShip(index, ship) {
+    if (ship.orientation === "horizontal") {
+      const end = ship.x + ship.length;
+      for (let i = ship.x; i < end; i++) {
+        this.shipIndexBoard[ship.y][i] = index;
+      }
+    } else {
+      const end = ship.y + ship.length;
+      for (let i = ship.y; i < end; i++) {
+        this.shipIndexBoard[i][ship.x] = index;
+      }
+    }
+  }
   populateBoard() {
     const shipLengths = [5, 4, 3, 3, 2];
     for (let i = 0; i < shipLengths.length; i++) {
