@@ -115,3 +115,10 @@ class Gameboard {
     }
   }
 }
+
+class Player {
+  constructor(isCPU, Ship, Gameboard) {
+    this.type = isCPU ? "cpu" : "player";
+    this.gameboard = new Gameboard(Ship);
+  }
+}
