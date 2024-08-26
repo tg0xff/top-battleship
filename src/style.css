@@ -20,6 +20,7 @@ h1 {
   height: 400px;
   width: 400px;
   margin: 11px auto;
+  border: 1px solid black;
 }
 
 .board-label {
