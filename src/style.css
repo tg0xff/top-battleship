@@ -21,3 +21,9 @@ h1 {
   width: 400px;
   margin: 11px auto;
 }
+
+.board-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+}
