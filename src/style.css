@@ -21,6 +21,9 @@ h1 {
   width: 400px;
   margin: 11px auto;
   border: 1px solid black;
+  display: grid;
+  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: repeat(10, 1fr);
 }
 
 .board-label {
