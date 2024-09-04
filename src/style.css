@@ -15,10 +15,17 @@ h1 {
   margin: 10px 0 30px;
 }
 
+.boards {
+  display: grid;
+  grid-template-columns: repeat(2, 530px);
+  grid-template-rows: auto;
+  justify-content: center;
+}
+
 .opponent-board,
 .player-board {
-  height: 400px;
-  width: 400px;
+  height: 500px;
+  width: 500px;
   margin: 11px auto;
   border: 1px solid black;
   display: grid;
