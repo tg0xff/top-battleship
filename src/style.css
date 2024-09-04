@@ -22,8 +22,7 @@ h1 {
   justify-content: center;
 }
 
-.opponent-board,
-.player-board {
+.board {
   height: 500px;
   width: 500px;
   margin: 11px auto;
@@ -31,6 +30,10 @@ h1 {
   display: grid;
   grid-template-rows: repeat(10, 1fr);
   grid-template-columns: repeat(10, 1fr);
+}
+
+.board > div {
+  border: 1px solid black;
 }
 
 .board-label {
