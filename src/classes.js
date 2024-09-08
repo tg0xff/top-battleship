@@ -49,15 +49,27 @@ export class Gameboard {
   }
   areAdjacentSquaresEmpty(y, x) {
     // Check every adjacent square in clockwise direction.
+    const top = y > 0 && this.isSquareEmpty(this.shipIndexBoard[y - 1][x]);
+    const upperRight =
+      y > 0 && x < 9 && this.isSquareEmpty(this.shipIndexBoard[y - 1][x + 1]);
+    const right = x < 9 && this.isSquareEmpty(this.shipIndexBoard[y][x + 1]);
+    const lowerRight =
+      x < 9 && y < 9 && this.isSquareEmpty(this.shipIndexBoard[y + 1][x + 1]);
+    const bottom = y < 9 && this.isSquareEmpty(this.shipIndexBoard[y + 1][x]);
+    const lowerLeft =
+      y < 9 && x > 0 && this.isSquareEmpty(this.shipIndexBoard[y + 1][x - 1]);
+    const left = x > 0 && this.isSquareEmpty(this.shipIndexBoard[y][x - 1]);
+    const upperLeft =
+      x > 0 && y > 0 && this.isSquareEmpty(this.shipIndexBoard[y - 1][x - 1]);
     return (
-      this.isSquareEmpty(this.shipIndexBoard[y - 1][x]) &&
-      this.isSquareEmpty(this.shipIndexBoard[y - 1][x + 1]) &&
-      this.isSquareEmpty(this.shipIndexBoard[y][x + 1]) &&
-      this.isSquareEmpty(this.shipIndexBoard[y + 1][x + 1]) &&
-      this.isSquareEmpty(this.shipIndexBoard[y + 1][x]) &&
-      this.isSquareEmpty(this.shipIndexBoard[y + 1][x - 1]) &&
-      this.isSquareEmpty(this.shipIndexBoard[y][x - 1]) &&
-      this.isSquareEmpty(this.shipIndexBoard[y - 1][x - 1])
+      top &&
+      upperRight &&
+      right &&
+      lowerRight &&
+      bottom &&
+      lowerLeft &&
+      left &&
+      upperLeft
     );
   }
   checkSqrsRecursivelyHorizontal(ship, n) {
