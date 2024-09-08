@@ -19,7 +19,7 @@ export class Gameboard {
     this.shipCount = 5;
     this.shipIndexBoard = this.makeBoardArray(-1);
     this.hitMarks = this.makeBoardArray(false);
-    this.populateBoard();
+    this.placeShipsRandomly();
   }
   makeBoardArray(initVal) {
     const board = [];
@@ -120,7 +120,7 @@ export class Gameboard {
       }
     }
   }
-  populateBoard() {
+  placeShipsRandomly() {
     const shipLengths = [5, 4, 3, 3, 2];
     for (let i = 0; i < shipLengths.length; i++) {
       const ship = new this.Ship(shipLengths[i]);
