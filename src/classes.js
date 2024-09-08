@@ -1,4 +1,4 @@
-class Ship {
+export class Ship {
   constructor(length) {
     this.length = length;
     this.hits = 0;
@@ -12,7 +12,7 @@ class Ship {
   }
 }
 
-class Gameboard {
+export class Gameboard {
   constructor(Ship) {
     this.Ship = Ship;
     this.ships = [];
@@ -23,9 +23,9 @@ class Gameboard {
   }
   makeBoardArray(initVal) {
     const board = [];
-    for (let y = 0; x < 10; x++) {
+    for (let y = 0; y < 10; y++) {
       const row = [];
-      for (let x = 0; y < 10; y++) {
+      for (let x = 0; x < 10; x++) {
         row[x] = initVal;
       }
       board[y] = row;
@@ -44,6 +44,36 @@ class Gameboard {
       return "gameover";
     }
   }
+  isSquareEmpty(square) {
+    return square === -1 || square === undefined;
+  }
+  areAdjacentSquaresEmpty(y, x) {
+    // Check every adjacent square in clockwise direction.
+    return (
+      this.isSquareEmpty(this.shipIndexBoard[y - 1][x]) &&
+      this.isSquareEmpty(this.shipIndexBoard[y - 1][x + 1]) &&
+      this.isSquareEmpty(this.shipIndexBoard[y][x + 1]) &&
+      this.isSquareEmpty(this.shipIndexBoard[y + 1][x + 1]) &&
+      this.isSquareEmpty(this.shipIndexBoard[y + 1][x]) &&
+      this.isSquareEmpty(this.shipIndexBoard[y + 1][x - 1]) &&
+      this.isSquareEmpty(this.shipIndexBoard[y][x - 1]) &&
+      this.isSquareEmpty(this.shipIndexBoard[y - 1][x - 1])
+    );
+  }
+  checkSqrsRecursivelyHorizontal(ship, n) {
+    if (n > ship.length) return true;
+    return (
+      this.areAdjacentSquaresEmpty(ship.y, ship.x + n) &&
+      this.checkSqrsRecursivelyHorizontal(ship, n + 1)
+    );
+  }
+  checkSqrsRecursivelyVertical(ship, n) {
+    if (n > ship.length) return true;
+    return (
+      this.areAdjacentSquaresEmpty(ship.y + n, ship.x) &&
+      this.checkSqrsRecursivelyVertical(ship, n + 1)
+    );
+  }
   canBePlaced(ship) {
     if (
       this.shipIndexBoard[ship.y][ship.x] !== -1 ||
@@ -51,45 +81,11 @@ class Gameboard {
     ) {
       return false;
     }
-
-    function isSquareEmpty(square) {
-      return square === -1 || square === undefined;
+    if (ship.orientation === "horizontal") {
+      return this.checkSqrsRecursivelyHorizontal(ship, 0);
+    } else {
+      return this.checkSqrsRecursivelyVertical(ship, 0);
     }
-
-    function areAdjacentSquaresEmpty(y, x) {
-      // Check every adjacent square in clockwise direction.
-      return (
-        isSquareEmpty(this.shipIndexBoard[y - 1][x]) &&
-        isSquareEmpty(this.shipIndexBoard[y - 1][x + 1]) &&
-        isSquareEmpty(this.shipIndexBoard[y][x + 1]) &&
-        isSquareEmpty(this.shipIndexBoard[y + 1][x + 1]) &&
-        isSquareEmpty(this.shipIndexBoard[y + 1][x]) &&
-        isSquareEmpty(this.shipIndexBoard[y + 1][x - 1]) &&
-        isSquareEmpty(this.shipIndexBoard[y][x - 1]) &&
-        isSquareEmpty(this.shipIndexBoard[y - 1][x - 1])
-      );
-    }
-
-    function getRecursiveSqrsFn(ship) {
-      function horizontal(ship, n) {
-        if (n > ship.length) return true;
-        return (
-          areAdjacentSquaresEmpty(ship.y, ship.x + n) && horizontal(ship, n + 1)
-        );
-      }
-
-      function vertical(ship, n) {
-        if (n > ship.length) return true;
-        return (
-          areAdjacentSquaresEmpty(ship.y + n, ship.x) && vertical(ship, n + 1)
-        );
-      }
-
-      return ship.orientation === "horizontal" ? horizontal : vertical;
-    }
-
-    const checkSqrsRecursively = getRecursiveSqrsFn(ship);
-    return checkSqrsRecursively(ship, 0);
   }
   placeShip(index, ship) {
     if (ship.orientation === "horizontal") {
@@ -117,9 +113,9 @@ class Gameboard {
   }
 }
 
-class Player {
+export class Player {
   constructor(isHuman, Ship, Gameboard) {
-    this.type = isHuman ? "player" : "cpu";
+    this.isHuman = isHuman;
     this.gameboard = new Gameboard(Ship);
   }
 }
