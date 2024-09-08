@@ -1,8 +1,8 @@
 export class Ship {
-  constructor(length) {
+  constructor(length, orientation) {
     this.length = length;
     this.hits = 0;
-    this.orientation = Math.random() > 0.5 ? "horizontal" : "vertical";
+    this.orientation = orientation;
   }
   hit() {
     this.hits++;
@@ -77,18 +77,18 @@ export class Gameboard {
   canBePlaced(ship) {
     if (
       this.shipIndexBoard[ship.y][ship.x] !== -1 ||
-      (ship.orientation === "horizontal" ? ship.x : ship.y) + ship.length > 10
+      (ship.orientation === "h" ? ship.x : ship.y) + ship.length > 10
     ) {
       return false;
     }
-    if (ship.orientation === "horizontal") {
+    if (ship.orientation === "h") {
       return this.checkSqrsRecursivelyHorizontal(ship, 0);
     } else {
       return this.checkSqrsRecursivelyVertical(ship, 0);
     }
   }
   placeShip(index, ship) {
-    if (ship.orientation === "horizontal") {
+    if (ship.orientation === "h") {
       const end = ship.x + ship.length;
       for (let i = ship.x; i < end; i++) {
         this.shipIndexBoard[ship.y][i] = index;
