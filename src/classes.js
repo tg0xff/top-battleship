@@ -19,7 +19,7 @@ export class Gameboard {
     this.shipCount = 5;
     this.shipIndexBoard = this.makeBoardArray(-1);
     this.hitMarks = this.makeBoardArray(false);
-    this.placeShipsRandomly();
+    this.placeShips();
   }
   makeBoardArray(initVal) {
     const board = [];
@@ -129,6 +129,19 @@ export class Gameboard {
         ship.y = Math.floor(Math.random() * 10);
       } while (!this.canBePlaced(ship));
       this.placeShip(i, ship);
+    }
+  }
+  placeShips() {
+    const shipLengths = [5, 4, 3, 3, 2];
+    let i = 0;
+    let x = 0;
+    while (i < 5) {
+      const ship = new this.Ship(shipLengths[i], "v");
+      ship.x = x;
+      ship.y = 0;
+      this.placeShip(i, ship);
+      i += 1;
+      x += 2;
     }
   }
 }
