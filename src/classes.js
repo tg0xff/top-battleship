@@ -81,14 +81,14 @@ export class Gameboard {
     );
   }
   checkSqrsRecursivelyHorizontal(ship, n) {
-    if (n > ship.length) return true;
+    if (n === ship.length) return true;
     return (
       this.areAdjacentSquaresEmpty(ship.y, ship.x + n) &&
       this.checkSqrsRecursivelyHorizontal(ship, n + 1)
     );
   }
   checkSqrsRecursivelyVertical(ship, n) {
-    if (n > ship.length) return true;
+    if (n === ship.length) return true;
     return (
       this.areAdjacentSquaresEmpty(ship.y + n, ship.x) &&
       this.checkSqrsRecursivelyVertical(ship, n + 1)
