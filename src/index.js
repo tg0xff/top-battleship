@@ -1,7 +1,10 @@
 import "./style.css";
+import { Player, Gameboard, Ship } from "./classes.js";
 
-const ui = new (class UI {
-  constructor() {
+class Game {
+  constructor(Player, Ship, Gameboard) {
+    this.player = new Player(true, Ship, Gameboard);
+    this.cpu = new Player(false, Ship, Gameboard);
     this.playerBoardDiv = document.querySelector("#player-board");
     this.opponentBoardDiv = document.querySelector("#opponent-board");
     this.makeGrid(this.playerBoardDiv);
@@ -16,4 +19,6 @@ const ui = new (class UI {
       }
     }
   }
-})();
+}
+
+const game = new Game(Player, Ship, Gameboard);
