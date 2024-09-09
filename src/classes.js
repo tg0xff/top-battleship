@@ -13,13 +13,17 @@ export class Ship {
 }
 
 export class Gameboard {
-  constructor(Ship) {
+  constructor(Ship, isHuman) {
     this.Ship = Ship;
     this.ships = [];
     this.shipCount = 5;
     this.shipIndexBoard = this.makeBoardArray(-1);
     this.hitMarks = this.makeBoardArray(false);
-    this.placeShips();
+    if (isHuman) {
+      this.placeShips();
+    } else {
+      this.placeShipsRandomly();
+    }
   }
   makeBoardArray(initVal) {
     const board = [];
@@ -149,6 +153,6 @@ export class Gameboard {
 export class Player {
   constructor(isHuman, Ship, Gameboard) {
     this.isHuman = isHuman;
-    this.gameboard = new Gameboard(Ship);
+    this.gameboard = new Gameboard(Ship, isHuman);
   }
 }
