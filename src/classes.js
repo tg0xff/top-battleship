@@ -123,6 +123,7 @@ export class Gameboard {
         this.shipIndexBoard[i][ship.x] = index;
       }
     }
+    this.ships.push(ship);
   }
   placeShipsRandomly() {
     const shipLengths = [5, 4, 3, 3, 2];
