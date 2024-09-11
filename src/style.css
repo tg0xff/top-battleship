@@ -22,10 +22,10 @@ h1 {
 }
 
 .boards {
-  display: grid;
-  grid-template-columns: repeat(2, 530px);
-  grid-template-rows: auto;
+  display: flex;
   justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
 }
 
 .board {
