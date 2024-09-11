@@ -40,6 +40,9 @@ h1 {
 
 .square {
   border: 1px solid black;
+  font-size: 2rem;
+  display: grid;
+  place-items: center;
 }
 
 .board-label {
