@@ -1,8 +1,8 @@
 export class Ship {
-  constructor(length, orientation) {
-    this.length = length;
+  constructor() {
     this.hits = 0;
-    this.orientation = orientation;
+    this.length;
+    this.isHorizontal;
   }
   hit() {
     this.hits++;
@@ -93,18 +93,18 @@ export class Gameboard {
   canBePlaced(ship) {
     if (
       this.shipIndexBoard[ship.y][ship.x] !== -1 ||
-      (ship.orientation === "h" ? ship.x : ship.y) + ship.length > 10
+      (ship.isHorizontal ? ship.x : ship.y) + ship.length > 10
     ) {
       return false;
     }
-    if (ship.orientation === "h") {
+    if (ship.isHorizontal) {
       return this.checkSqrsRecursivelyHorizontal(ship, 0);
     } else {
       return this.checkSqrsRecursivelyVertical(ship, 0);
     }
   }
   placeShip(index, ship) {
-    if (ship.orientation === "h") {
+    if (ship.isHorizontal) {
       const end = ship.x + ship.length;
       for (let i = ship.x; i < end; i++) {
         this.shipIndexBoard[ship.y][i] = index;
@@ -122,10 +122,9 @@ export class Gameboard {
     this.shipIndexBoard = this.makeBoardArray(-1);
     const shipLengths = [5, 4, 3, 3, 2];
     for (let i = 0; i < shipLengths.length; i++) {
-      const ship = new this.Ship(
-        shipLengths[i],
-        Math.random() > 0.5 ? "v" : "h",
-      );
+      const ship = new this.Ship();
+      ship.length = shipLengths[i];
+      ship.isHorizontal = Math.random() > 0.5;
       do {
         ship.x = Math.floor(Math.random() * 10);
         ship.y = Math.floor(Math.random() * 10);
@@ -140,7 +139,9 @@ export class Gameboard {
     let i = 0;
     let x = 0;
     while (i < 5) {
-      const ship = new this.Ship(shipLengths[i], "v");
+      const ship = new this.Ship();
+      ship.length = shipLengths[i];
+      ship.isHorizontal = false
       ship.x = x;
       ship.y = 0;
       this.placeShip(i, ship);
