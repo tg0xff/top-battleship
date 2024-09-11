@@ -17,7 +17,7 @@ export class Gameboard {
     this.Ship = Ship;
     this.ships = [];
     this.shipCount = 5;
-    this.shipIndexBoard = this.makeBoardArray(-1);
+    this.shipIndexBoard;
     this.hitMarks = this.makeBoardArray(false);
     if (isHuman) {
       this.placeShips();
@@ -55,24 +55,16 @@ export class Gameboard {
     // Check every adjacent square in clockwise direction.
     const top = y === 0 || isSquareEmpty(this.shipIndexBoard[y - 1][x]);
     const upperRight =
-      y === 0 ||
-      x === 9 ||
-      isSquareEmpty(this.shipIndexBoard[y - 1][x + 1]);
+      y === 0 || x === 9 || isSquareEmpty(this.shipIndexBoard[y - 1][x + 1]);
     const right = x === 9 || isSquareEmpty(this.shipIndexBoard[y][x + 1]);
     const lowerRight =
-      x === 9 ||
-      y === 9 ||
-      isSquareEmpty(this.shipIndexBoard[y + 1][x + 1]);
+      x === 9 || y === 9 || isSquareEmpty(this.shipIndexBoard[y + 1][x + 1]);
     const bottom = y === 9 || isSquareEmpty(this.shipIndexBoard[y + 1][x]);
     const lowerLeft =
-      y === 9 ||
-      x === 0 ||
-      isSquareEmpty(this.shipIndexBoard[y + 1][x - 1]);
+      y === 9 || x === 0 || isSquareEmpty(this.shipIndexBoard[y + 1][x - 1]);
     const left = x === 0 || isSquareEmpty(this.shipIndexBoard[y][x - 1]);
     const upperLeft =
-      x === 0 ||
-      y === 0 ||
-      isSquareEmpty(this.shipIndexBoard[y - 1][x - 1]);
+      x === 0 || y === 0 || isSquareEmpty(this.shipIndexBoard[y - 1][x - 1]);
     return (
       top &&
       upperRight &&
@@ -126,9 +118,14 @@ export class Gameboard {
     this.ships.push(ship);
   }
   placeShipsRandomly() {
+    this.ships = [];
+    this.shipIndexBoard = this.makeBoardArray(-1);
     const shipLengths = [5, 4, 3, 3, 2];
     for (let i = 0; i < shipLengths.length; i++) {
-      const ship = new this.Ship(shipLengths[i]);
+      const ship = new this.Ship(
+        shipLengths[i],
+        Math.random() > 0.5 ? "v" : "h",
+      );
       do {
         ship.x = Math.floor(Math.random() * 10);
         ship.y = Math.floor(Math.random() * 10);
@@ -137,6 +134,8 @@ export class Gameboard {
     }
   }
   placeShips() {
+    this.ships = [];
+    this.shipIndexBoard = this.makeBoardArray(-1);
     const shipLengths = [5, 4, 3, 3, 2];
     let i = 0;
     let x = 0;

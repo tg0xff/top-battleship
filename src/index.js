@@ -7,6 +7,9 @@ class Game {
     this.cpu = new Player(false, Ship, Gameboard);
     this.playerBoardDiv = document.querySelector("#player-board");
     this.opponentBoardDiv = document.querySelector("#opponent-board");
+    this.randomBtn = document.querySelector("#random");
+    this.randomBtn.addEventListener("click", this.randomizeBoard.bind(this));
+    this.startBtn = document.querySelector("#start");
     this.makeGrid(this.playerBoardDiv);
     this.makeGrid(this.opponentBoardDiv);
     this.drawShips(this.player, this.playerBoardDiv);
@@ -23,16 +26,25 @@ class Game {
     }
   }
   drawShips(player, boardDiv) {
+    const shipDivs = boardDiv.querySelectorAll(".ship");
+    shipDivs.forEach((div) => div.parentNode.removeChild(div));
+
     for (const ship of player.gameboard.ships) {
       const div = document.createElement("div");
       div.className = "ship";
       if (ship.orientation === "v") {
-        div.style["grid-area"] = `${ship.y + 1} / ${ship.x + 1} / span ${ship.length}`;
+        div.style["grid-area"] =
+          `${ship.y + 1} / ${ship.x + 1} / span ${ship.length}`;
       } else if (ship.orientation === "h") {
-        div.style["grid-area"] = `${ship.y + 1} / ${ship.x + 1} / span 1 / span ${ship.length}`;
+        div.style["grid-area"] =
+          `${ship.y + 1} / ${ship.x + 1} / span 1 / span ${ship.length}`;
       }
       boardDiv.appendChild(div);
     }
+  }
+  randomizeBoard() {
+    this.player.gameboard.placeShipsRandomly();
+    this.drawShips(this.player, this.playerBoardDiv);
   }
 }
 
