@@ -5,11 +5,13 @@ class Game {
   constructor(Player, Ship, Gameboard) {
     this.player = new Player(true, Ship, Gameboard);
     this.cpu = new Player(false, Ship, Gameboard);
+
     this.playerBoardDiv = document.querySelector("#player-board");
     this.opponentBoardDiv = document.querySelector("#opponent-board");
     this.randomBtn = document.querySelector("#random");
     this.randomBtn.addEventListener("click", this.randomizeBoard.bind(this));
     this.startBtn = document.querySelector("#start");
+
     this.makeGrid(this.playerBoardDiv);
     this.makeGrid(this.opponentBoardDiv);
     this.drawShips(this.player, this.playerBoardDiv);
