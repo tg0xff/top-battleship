@@ -32,12 +32,12 @@ class Game {
     for (const ship of player.gameboard.ships) {
       const div = document.createElement("div");
       div.className = "ship";
-      if (ship.orientation === "v") {
-        div.style["grid-area"] =
-          `${ship.y + 1} / ${ship.x + 1} / span ${ship.length}`;
-      } else if (ship.orientation === "h") {
+      if (ship.isHorizontal) {
         div.style["grid-area"] =
           `${ship.y + 1} / ${ship.x + 1} / span 1 / span ${ship.length}`;
+      } else {
+        div.style["grid-area"] =
+          `${ship.y + 1} / ${ship.x + 1} / span ${ship.length}`;
       }
       boardDiv.appendChild(div);
     }
