@@ -15,6 +15,12 @@ h1 {
   margin: 10px 0 30px;
 }
 
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 170px;
+}
+
 .boards {
   display: grid;
   grid-template-columns: repeat(2, 530px);
