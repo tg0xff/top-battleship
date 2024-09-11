@@ -52,3 +52,12 @@ h1 {
   z-index: -1;
   background-color: #00ff0088;
 }
+
+.opponent-board {
+  cursor: pointer;
+}
+
+.greyed-board {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
