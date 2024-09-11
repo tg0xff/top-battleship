@@ -40,6 +40,7 @@ export class Gameboard {
     if (this.hitMarks[y][x]) return;
     this.hitMarks[y][x] = true;
     const shipIndex = this.shipIndexBoard[y][x];
+    if (shipIndex === -1) return;
     this.ships[shipIndex].hit();
     if (this.ships[shipIndex].isSunk()) {
       this.shipCount--;

@@ -5,9 +5,11 @@ class Game {
   constructor(Player, Ship, Gameboard) {
     this.player = new Player(true, Ship, Gameboard);
     this.cpu = new Player(false, Ship, Gameboard);
+    this.gameHasStarted = false;
 
     this.playerBoardDiv = document.querySelector("#player-board");
     this.opponentBoardDiv = document.querySelector("#opponent-board");
+    this.opponentBoardDiv.addEventListener("click", (e) => this.sendAttack(e));
     this.randomBtn = document.querySelector("#random");
     this.randomBtn.addEventListener("click", this.randomizeBoard.bind(this));
     this.startBtn = document.querySelector("#start");
@@ -45,8 +47,20 @@ class Game {
     }
   }
   randomizeBoard() {
+    if (!this.gameHasStarted) return;
     this.player.gameboard.placeShipsRandomly();
     this.drawShips(this.player, this.playerBoardDiv);
+  }
+  sendAttack(e) {
+    if (!this.gameHasStarted) return;
+    if (!e.target.classList.contains("square")) return;
+    const [x, y] = e.target.getAttribute("data-coords").split(",");
+    this.cpu.gameboard.receiveAttack(y, x);
+    if (this.cpu.gameboard.shipIndexBoard[y][x] !== -1) {
+      e.target.textContent = "☠️";
+    } else {
+      e.target.textContent = "⚫️";
+    }
   }
 }
 
