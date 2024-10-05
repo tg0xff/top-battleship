@@ -47,7 +47,7 @@ class Game {
     }
   }
   randomizeBoard() {
-    if (!this.gameHasStarted) return;
+    if (this.gameHasStarted) return;
     this.player.gameboard.placeShipsRandomly();
     this.drawShips(this.player, this.playerBoardDiv);
   }
