@@ -1,3 +1,7 @@
+const EMPTY = -1;
+const HIT = -2;
+const DISREGARDED = -3;
+
 export class Ship {
   constructor() {
     this.hits = 0;
@@ -17,29 +21,29 @@ export class Gameboard {
     this.Ship = Ship;
     this.ships = [];
     this.shipCount = 5;
-    this.shipIndexBoard;
-    this.hitMarks = this.makeBoardArray(false);
+    this.boardArr = this.makeBoardArray();
     if (isHuman) {
       this.placeShips();
     } else {
       this.placeShipsRandomly();
     }
   }
-  makeBoardArray(initVal) {
+  makeBoardArray() {
     const board = [];
     for (let y = 0; y < 10; y++) {
       const row = [];
       for (let x = 0; x < 10; x++) {
-        row[x] = initVal;
+        row[x] = EMPTY;
       }
       board[y] = row;
     }
     return board;
   }
   receiveAttack(y, x) {
-    if (this.hitMarks[y][x]) return;
-    this.hitMarks[y][x] = true;
-    const shipIndex = this.shipIndexBoard[y][x];
+    if (this.boardArr[y][x] === HIT || this.boardArr[y][x] === DISREGARDED)
+      return;
+    const shipIndex = this.boardArr[y][x];
+    this.boardArr[y][x] = HIT;
     if (shipIndex === -1) return;
     this.ships[shipIndex].hit();
     if (this.ships[shipIndex].isSunk()) {
@@ -51,21 +55,21 @@ export class Gameboard {
   }
   areAdjacentSquaresEmpty(y, x) {
     function isSquareEmpty(square) {
-      return square === -1 || square === undefined;
+      return square === EMPTY || square === undefined;
     }
     // Check every adjacent square in clockwise direction.
-    const top = y === 0 || isSquareEmpty(this.shipIndexBoard[y - 1][x]);
+    const top = y === 0 || isSquareEmpty(this.boardArr[y - 1][x]);
     const upperRight =
-      y === 0 || x === 9 || isSquareEmpty(this.shipIndexBoard[y - 1][x + 1]);
-    const right = x === 9 || isSquareEmpty(this.shipIndexBoard[y][x + 1]);
+      y === 0 || x === 9 || isSquareEmpty(this.boardArr[y - 1][x + 1]);
+    const right = x === 9 || isSquareEmpty(this.boardArr[y][x + 1]);
     const lowerRight =
-      x === 9 || y === 9 || isSquareEmpty(this.shipIndexBoard[y + 1][x + 1]);
-    const bottom = y === 9 || isSquareEmpty(this.shipIndexBoard[y + 1][x]);
+      x === 9 || y === 9 || isSquareEmpty(this.boardArr[y + 1][x + 1]);
+    const bottom = y === 9 || isSquareEmpty(this.boardArr[y + 1][x]);
     const lowerLeft =
-      y === 9 || x === 0 || isSquareEmpty(this.shipIndexBoard[y + 1][x - 1]);
-    const left = x === 0 || isSquareEmpty(this.shipIndexBoard[y][x - 1]);
+      y === 9 || x === 0 || isSquareEmpty(this.boardArr[y + 1][x - 1]);
+    const left = x === 0 || isSquareEmpty(this.boardArr[y][x - 1]);
     const upperLeft =
-      x === 0 || y === 0 || isSquareEmpty(this.shipIndexBoard[y - 1][x - 1]);
+      x === 0 || y === 0 || isSquareEmpty(this.boardArr[y - 1][x - 1]);
     return (
       top &&
       upperRight &&
@@ -93,7 +97,7 @@ export class Gameboard {
   }
   canBePlaced(ship) {
     if (
-      this.shipIndexBoard[ship.y][ship.x] !== -1 ||
+      this.boardArr[ship.y][ship.x] !== -1 ||
       (ship.isHorizontal ? ship.x : ship.y) + ship.length > 10
     ) {
       return false;
@@ -108,19 +112,19 @@ export class Gameboard {
     if (ship.isHorizontal) {
       const end = ship.x + ship.length;
       for (let i = ship.x; i < end; i++) {
-        this.shipIndexBoard[ship.y][i] = index;
+        this.boardArr[ship.y][i] = index;
       }
     } else {
       const end = ship.y + ship.length;
       for (let i = ship.y; i < end; i++) {
-        this.shipIndexBoard[i][ship.x] = index;
+        this.boardArr[i][ship.x] = index;
       }
     }
     this.ships.push(ship);
   }
   placeShipsRandomly() {
     this.ships = [];
-    this.shipIndexBoard = this.makeBoardArray(-1);
+    this.boardArr = this.makeBoardArray();
     const shipLengths = [5, 4, 3, 3, 2];
     for (let i = 0; i < shipLengths.length; i++) {
       const ship = new this.Ship();
@@ -135,14 +139,14 @@ export class Gameboard {
   }
   placeShips() {
     this.ships = [];
-    this.shipIndexBoard = this.makeBoardArray(-1);
+    this.boardArr = this.makeBoardArray();
     const shipLengths = [5, 4, 3, 3, 2];
     let i = 0;
     let x = 0;
     while (i < 5) {
       const ship = new this.Ship();
       ship.length = shipLengths[i];
-      ship.isHorizontal = false
+      ship.isHorizontal = false;
       ship.x = x;
       ship.y = 0;
       this.placeShip(i, ship);
