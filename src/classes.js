@@ -19,7 +19,6 @@ class Ship {
 
 class Gameboard {
   constructor(isHuman) {
-    this.Ship = Ship;
     this.ships = [];
     this.shipCount = 5;
     if (isHuman) {
