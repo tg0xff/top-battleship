@@ -54,10 +54,16 @@ class Game {
     this.player1.board.placeShipsRandomly();
     this.drawShips(this.player1, this.player1BoardDiv);
   }
+  getCoordsFromElement(element) {
+    return element
+      .getAttribute("data-coords")
+      .split(",")
+      .map((x) => +x);
+  }
   drawSquares(player, gridElement) {
     const squares = gridElement.querySelectorAll(".square");
     squares.forEach((square) => {
-      const [y, x] = square.getAttribute("data-coords").split(",");
+      const [y, x] = this.getCoordsFromElement(square);
       square.textContent = player.board.getSquareState(y, x);
     });
   }
@@ -68,7 +74,7 @@ class Game {
       !e.target.classList.contains("square")
     )
       return;
-    const [y, x] = e.target.getAttribute("data-coords").split(",");
+    const [y, x] = this.getCoordsFromElement(e.target);
     if (!this.player2.board.canBeAttacked(y, x)) return;
     this.player2.board.receiveAttack(y, x);
     this.drawSquares(this.player2, this.player2BoardDiv);
