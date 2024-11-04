@@ -1,10 +1,10 @@
 import "./style.css";
-import { Player, Gameboard, Ship } from "./classes.js";
+import Player from "./classes.js";
 
 class Game {
-  constructor(Player, Ship, Gameboard) {
-    this.player = new Player(true, Ship, Gameboard);
-    this.cpu = new Player(false, Ship, Gameboard);
+  constructor() {
+    this.player = new Player(true);
+    this.cpu = new Player(false);
     this.gameHasStarted = false;
     this.isPlayerOnesTurn = true;
 
@@ -88,4 +88,4 @@ class Game {
   }
 }
 
-const game = new Game(Player, Ship, Gameboard);
+const game = new Game();
