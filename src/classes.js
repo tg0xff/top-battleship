@@ -54,6 +54,20 @@ class Gameboard {
     const square = this.boardArr[y][x];
     return square !== DISREGARDED && square !== HIT && square !== DAMAGED;
   }
+  markDisregarded(y, x) {
+    const differenceMatrix = [
+      [-1, 1],
+      [1, 1],
+      [1, -1],
+      [-1, -1],
+    ];
+    for (const difference of differenceMatrix) {
+      const b = y + difference[0];
+      const a = x + difference[1];
+      if (b >= 0 && b <= 9 && a >= 0 && a <= 9 && this.boardArr[b][a] === EMPTY)
+        this.boardArr[b][a] = DISREGARDED;
+    }
+  }
   receiveAttack(y, x) {
     const shipIndex = this.boardArr[y][x];
     if (shipIndex >= 0) {
@@ -65,6 +79,7 @@ class Gameboard {
     } else {
       this.boardArr[y][x] = HIT;
     }
+    this.markDisregarded(y, x);
     if (this.shipCount === 0) {
       return "gameover";
     }
