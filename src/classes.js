@@ -3,7 +3,7 @@ const DISREGARDED = -2;
 const HIT = -3;
 const DAMAGED = -4;
 
-export class Ship {
+class Ship {
   constructor() {
     this.hits = 0;
     this.length;
@@ -17,8 +17,8 @@ export class Ship {
   }
 }
 
-export class Gameboard {
-  constructor(Ship, isHuman) {
+class Gameboard {
+  constructor(isHuman) {
     this.Ship = Ship;
     this.ships = [];
     this.shipCount = 5;
@@ -144,7 +144,7 @@ export class Gameboard {
     this.boardArr = this.makeBoardArray();
     const shipLengths = [5, 4, 3, 3, 2];
     for (let i = 0; i < shipLengths.length; i++) {
-      const ship = new this.Ship();
+      const ship = new Ship();
       ship.length = shipLengths[i];
       ship.isHorizontal = Math.random() > 0.5;
       do {
@@ -161,7 +161,7 @@ export class Gameboard {
     let i = 0;
     let x = 0;
     while (i < 5) {
-      const ship = new this.Ship();
+      const ship = new Ship();
       ship.length = shipLengths[i];
       ship.isHorizontal = false;
       ship.x = x;
@@ -173,9 +173,9 @@ export class Gameboard {
   }
 }
 
-export class Player {
-  constructor(isHuman, Ship, Gameboard) {
+export default class Player {
+  constructor(isHuman) {
     this.isHuman = isHuman;
-    this.gameboard = new Gameboard(Ship, isHuman);
+    this.gameboard = new Gameboard(isHuman);
   }
 }
