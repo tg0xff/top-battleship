@@ -23,7 +23,7 @@ class Game {
       for (let x = 0; x < 10; x++) {
         const div = document.createElement("div");
         div.className = "square";
-        div.style["grid-area"] = `${x + 1} / ${y + 1}`;
+        div.style["grid-area"] = `${y + 1} / ${x + 1}`;
         div.setAttribute("data-coords", `${y},${x}`);
         boardDiv.appendChild(div);
       }
