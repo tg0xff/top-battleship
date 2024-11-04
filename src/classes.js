@@ -1,6 +1,7 @@
 const EMPTY = -1;
-const HIT = -2;
-const DISREGARDED = -3;
+const DISREGARDED = -2;
+const HIT = -3;
+const DAMAGED = -4;
 
 export class Ship {
   constructor() {
@@ -21,9 +22,8 @@ export class Gameboard {
     this.Ship = Ship;
     this.ships = [];
     this.shipCount = 5;
-    this.boardArr = this.makeBoardArray();
     if (isHuman) {
-      this.placeShips();
+      this.placeShipsDefault();
     } else {
       this.placeShipsRandomly();
     }
@@ -39,15 +39,32 @@ export class Gameboard {
     }
     return board;
   }
+  getSquareState(y, x) {
+    switch (this.boardArr[y][x]) {
+      case DISREGARDED:
+        return "⚪";
+      case HIT:
+        return "🔴";
+      case DAMAGED:
+        return "☠️";
+      default:
+        return "";
+    }
+  }
+  canBeAttacked(y, x) {
+    const square = this.boardArr[y][x];
+    return square !== DISREGARDED && square !== HIT && square !== DAMAGED;
+  }
   receiveAttack(y, x) {
-    if (this.boardArr[y][x] === HIT || this.boardArr[y][x] === DISREGARDED)
-      return;
     const shipIndex = this.boardArr[y][x];
-    this.boardArr[y][x] = HIT;
-    if (shipIndex === -1) return;
-    this.ships[shipIndex].hit();
-    if (this.ships[shipIndex].isSunk()) {
-      this.shipCount--;
+    if (shipIndex >= 0) {
+      this.boardArr[y][x] = DAMAGED;
+      this.ships[shipIndex].hit();
+      if (this.ships[shipIndex].isSunk()) {
+        this.shipCount--;
+      }
+    } else {
+      this.boardArr[y][x] = HIT;
     }
     if (this.shipCount === 0) {
       return "gameover";
@@ -97,7 +114,7 @@ export class Gameboard {
   }
   canBePlaced(ship) {
     if (
-      this.boardArr[ship.y][ship.x] !== -1 ||
+      this.boardArr[ship.y][ship.x] !== EMPTY ||
       (ship.isHorizontal ? ship.x : ship.y) + ship.length > 10
     ) {
       return false;
@@ -137,7 +154,7 @@ export class Gameboard {
       this.placeShip(i, ship);
     }
   }
-  placeShips() {
+  placeShipsDefault() {
     this.ships = [];
     this.boardArr = this.makeBoardArray();
     const shipLengths = [5, 4, 3, 3, 2];
