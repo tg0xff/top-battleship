@@ -3,23 +3,23 @@ import Player from "./classes.js";
 
 class Game {
   constructor() {
-    this.player = new Player(true);
-    this.cpu = new Player(false);
+    this.player1 = new Player(true);
+    this.player2 = new Player(false);
     this.gameHasStarted = false;
-    this.isPlayerOnesTurn = true;
+    this.isPlayer1Turn = true;
 
-    this.playerBoardDiv = document.querySelector("#player-board");
-    this.cpuBoardDiv = document.querySelector("#opponent-board");
+    this.player1BoardDiv = document.querySelector("#player-board");
+    this.player2BoardDiv = document.querySelector("#opponent-board");
     this.randomBtn = document.querySelector("#random");
     this.startBtn = document.querySelector("#start");
 
-    this.cpuBoardDiv.addEventListener("click", (e) => this.sendAttack(e));
+    this.player2BoardDiv.addEventListener("click", (e) => this.sendAttack(e));
     this.randomBtn.addEventListener("click", this.randomizeBoard.bind(this));
     this.startBtn.addEventListener("click", () => (this.gameHasStarted = true));
 
-    this.makeGrid(this.playerBoardDiv);
-    this.makeGrid(this.cpuBoardDiv);
-    this.drawShips(this.player, this.playerBoardDiv);
+    this.makeGrid(this.player1BoardDiv);
+    this.makeGrid(this.player2BoardDiv);
+    this.drawShips(this.player1, this.player1BoardDiv);
   }
   makeGrid(boardDiv) {
     for (let y = 0; y < 10; y++) {
@@ -51,8 +51,8 @@ class Game {
   }
   randomizeBoard() {
     if (this.gameHasStarted) return;
-    this.player.board.placeShipsRandomly();
-    this.drawShips(this.player, this.playerBoardDiv);
+    this.player1.board.placeShipsRandomly();
+    this.drawShips(this.player1, this.player1BoardDiv);
   }
   drawSquares(player, gridElement) {
     const squares = gridElement.querySelectorAll(".square");
@@ -64,15 +64,15 @@ class Game {
   sendAttack(e) {
     if (
       !this.gameHasStarted ||
-      !this.isPlayerOnesTurn ||
+      !this.isPlayer1Turn ||
       !e.target.classList.contains("square")
     )
       return;
     const [y, x] = e.target.getAttribute("data-coords").split(",");
-    if (!this.cpu.board.canBeAttacked(y, x)) return;
-    this.cpu.board.receiveAttack(y, x);
-    this.drawSquares(this.cpu, this.cpuBoardDiv);
-    this.isPlayerOnesTurn = false;
+    if (!this.player2.board.canBeAttacked(y, x)) return;
+    this.player2.board.receiveAttack(y, x);
+    this.drawSquares(this.player2, this.player2BoardDiv);
+    this.isPlayer1Turn = false;
     this.makeCPUAttack();
   }
   makeCPUAttack() {
@@ -81,10 +81,10 @@ class Game {
     do {
       x = Math.floor(Math.random() * 10);
       y = Math.floor(Math.random() * 10);
-    } while (!this.player.board.canBeAttacked(y, x));
-    this.player.board.receiveAttack(y, x);
-    this.drawSquares(this.player, this.playerBoardDiv);
-    this.isPlayerOnesTurn = true;
+    } while (!this.player1.board.canBeAttacked(y, x));
+    this.player1.board.receiveAttack(y, x);
+    this.drawSquares(this.player1, this.player1BoardDiv);
+    this.isPlayer1Turn = true;
   }
 }
 
