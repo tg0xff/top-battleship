@@ -36,7 +36,7 @@ class Game {
     const shipDivs = boardDiv.querySelectorAll(".ship");
     shipDivs.forEach((div) => div.parentNode.removeChild(div));
 
-    for (const ship of player.gameboard.ships) {
+    for (const ship of player.board.ships) {
       const div = document.createElement("div");
       div.className = "ship";
       if (ship.isHorizontal) {
@@ -51,14 +51,14 @@ class Game {
   }
   randomizeBoard() {
     if (this.gameHasStarted) return;
-    this.player.gameboard.placeShipsRandomly();
+    this.player.board.placeShipsRandomly();
     this.drawShips(this.player, this.playerBoardDiv);
   }
   drawSquares(player, gridElement) {
     const squares = gridElement.querySelectorAll(".square");
     squares.forEach((square) => {
       const [y, x] = square.getAttribute("data-coords").split(",");
-      square.textContent = player.gameboard.getSquareState(y, x);
+      square.textContent = player.board.getSquareState(y, x);
     });
   }
   sendAttack(e) {
@@ -69,8 +69,8 @@ class Game {
     )
       return;
     const [y, x] = e.target.getAttribute("data-coords").split(",");
-    if (!this.cpu.gameboard.canBeAttacked(y, x)) return;
-    this.cpu.gameboard.receiveAttack(y, x);
+    if (!this.cpu.board.canBeAttacked(y, x)) return;
+    this.cpu.board.receiveAttack(y, x);
     this.drawSquares(this.cpu, this.cpuBoardDiv);
     this.isPlayerOnesTurn = false;
     this.makeCPUAttack();
@@ -81,8 +81,8 @@ class Game {
     do {
       x = Math.floor(Math.random() * 10);
       y = Math.floor(Math.random() * 10);
-    } while (!this.player.gameboard.canBeAttacked(y, x));
-    this.player.gameboard.receiveAttack(y, x);
+    } while (!this.player.board.canBeAttacked(y, x));
+    this.player.board.receiveAttack(y, x);
     this.drawSquares(this.player, this.playerBoardDiv);
     this.isPlayerOnesTurn = true;
   }

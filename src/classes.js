@@ -57,8 +57,8 @@ class Gameboard {
   receiveAttack(y, x) {
     const shipIndex = this.boardArr[y][x];
     if (shipIndex >= 0) {
-      this.boardArr[y][x] = DAMAGED;
       this.ships[shipIndex].hit();
+      this.boardArr[y][x] = DAMAGED;
       if (this.ships[shipIndex].isSunk()) {
         this.shipCount--;
       }
@@ -175,6 +175,6 @@ class Gameboard {
 export default class Player {
   constructor(isHuman) {
     this.isHuman = isHuman;
-    this.gameboard = new Gameboard(isHuman);
+    this.board = new Gameboard(isHuman);
   }
 }
