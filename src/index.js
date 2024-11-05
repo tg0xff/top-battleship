@@ -15,11 +15,18 @@ class Game {
 
     this.player2BoardDiv.addEventListener("click", (e) => this.sendAttack(e));
     this.randomBtn.addEventListener("click", this.randomizeBoard.bind(this));
-    this.startBtn.addEventListener("click", () => (this.gameHasStarted = true));
+    this.startBtn.addEventListener("click", () => {
+      this.disableButtons();
+      this.gameHasStarted = true;
+    });
 
     this.makeGrid(this.player1BoardDiv);
     this.makeGrid(this.player2BoardDiv);
     this.drawShips(this.player1, this.player1BoardDiv);
+  }
+  disableButtons() {
+    this.randomBtn.setAttribute("disabled", "");
+    this.startBtn.setAttribute("disabled", "");
   }
   makeGrid(boardDiv) {
     for (let y = 0; y < 10; y++) {
