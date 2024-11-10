@@ -19,18 +19,24 @@ class Game {
       !this.player2.board.canBeAttacked(y, x)
     )
       return;
-    this.player2.board.receiveAttack(y, x);
-    this.isPlayer1Turn = false;
-    this.makeCPUAttack();
+    const attackResult = this.player2.board.receiveAttack(y, x);
+    if (attackResult === "miss") {
+      this.isPlayer1Turn = false;
+      this.makeCPUAttack();
+    }
   }
   makeCPUAttack() {
-    let x;
-    let y;
-    do {
-      x = Math.floor(Math.random() * 10);
-      y = Math.floor(Math.random() * 10);
-    } while (!this.player1.board.canBeAttacked(y, x));
-    this.player1.board.receiveAttack(y, x);
+    let keepGoing = true;
+    while (keepGoing) {
+      let x;
+      let y;
+      do {
+        x = Math.floor(Math.random() * 10);
+        y = Math.floor(Math.random() * 10);
+      } while (!this.player1.board.canBeAttacked(y, x));
+      const attackResult = this.player1.board.receiveAttack(y, x);
+      keepGoing = attackResult === "hit";
+    }
     this.isPlayer1Turn = true;
   }
 }

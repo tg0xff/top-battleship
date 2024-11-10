@@ -70,19 +70,23 @@ class Gameboard {
   }
   receiveAttack(y, x) {
     const shipIndex = this.boardArr[y][x];
+    let returnVal;
     if (shipIndex >= 0) {
       this.ships[shipIndex].hit();
       this.boardArr[y][x] = DAMAGED;
+      returnVal = "hit";
       if (this.ships[shipIndex].isSunk()) {
         this.shipCount--;
       }
     } else {
       this.boardArr[y][x] = HIT;
+      returnVal = "miss";
     }
     this.markDisregarded(y, x);
     if (this.shipCount === 0) {
-      return "gameover";
+      returnVal = "gameover";
     }
+    return returnVal;
   }
   areAdjacentSquaresEmpty(y, x) {
     function isSquareEmpty(square) {
