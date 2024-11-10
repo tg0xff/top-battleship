@@ -19,11 +19,18 @@ class Game {
       !this.player2.board.canBeAttacked(y, x)
     )
       return;
-    const attackResult = this.player2.board.receiveAttack(y, x);
-    if (attackResult === "miss") {
-      this.isPlayer1Turn = false;
-      this.makeCPUAttack();
+    this.isPlayer1Turn = false;
+    const p1AttackResult = this.player2.board.receiveAttack(y, x);
+    if (p1AttackResult === "gameover") {
+      return "player 1";
     }
+    if (p1AttackResult === "miss") {
+      const p2AttackResult = this.makeCPUAttack();
+      if (p2AttackResult === "gameover") {
+        return "player 2";
+      }
+    }
+    this.isPlayer1Turn = true;
   }
   makeCPUAttack() {
     let keepGoing = true;
@@ -35,9 +42,9 @@ class Game {
         y = Math.floor(Math.random() * 10);
       } while (!this.player1.board.canBeAttacked(y, x));
       const attackResult = this.player1.board.receiveAttack(y, x);
+      if (attackResult === "gameover") return attackResult;
       keepGoing = attackResult === "hit";
     }
-    this.isPlayer1Turn = true;
   }
 }
 
@@ -45,46 +52,54 @@ class UI {
   constructor() {
     this.game = new Game();
 
+    this.announcementEl = document.querySelector("#announcement");
     this.yourBoardDiv = document.querySelector("#your-board");
     this.theirBoardDiv = document.querySelector("#their-board");
     this.randomBtn = document.querySelector("#random");
     this.startBtn = document.querySelector("#start");
 
+    this.makeGrid(this.yourBoardDiv);
+    this.makeGrid(this.theirBoardDiv);
+
     this.theirBoardDiv.addEventListener("click", (e) => {
       if (e.target.classList.contains("square")) {
         const [y, x] = this.getCoordsFromElement(e.target);
-        this.game.sendAttack(y, x);
+        const result = this.game.sendAttack(y, x);
         this.drawSquares(this.game.player2, this.theirBoardDiv);
         this.drawSquares(this.game.player1, this.yourBoardDiv);
+        if (result) this.gameOver(result);
       }
     });
     this.randomBtn.addEventListener("click", () => {
       this.game.randomizeBoard();
       this.drawShips(this.game.player1, this.yourBoardDiv);
     });
-    this.startBtn.addEventListener("click", () => {
-      this.disableButtons();
-      this.game.gameHasStarted = true;
-    });
+    this.startBtn.addEventListener("click", this.startGame.bind(this));
 
-    this.makeGrid(this.yourBoardDiv);
-    this.makeGrid(this.theirBoardDiv);
     this.drawShips(this.game.player1, this.yourBoardDiv);
   }
-  makeGrid(boardDiv) {
-    for (let y = 0; y < 10; y++) {
-      for (let x = 0; x < 10; x++) {
-        const div = document.createElement("div");
-        div.className = "square";
-        div.style["grid-area"] = `${y + 1} / ${x + 1}`;
-        div.setAttribute("data-coords", `${y},${x}`);
-        boardDiv.appendChild(div);
-      }
-    }
+  startGame() {
+    this.disableButtons();
+    this.game.gameHasStarted = true;
+  }
+  startNewGame() {
+    this.announcementEl.textContent = "";
+    this.startBtn.textContent = "Start game";
+    this.startBtn.removeEventListener("click", this.startNewGame.bind(this));
+    this.game = new Game();
+    this.drawSquares(this.game.player1, this.yourBoardDiv);
+    this.drawSquares(this.game.player2, this.theirBoardDiv);
+    this.drawShips(this.game.player1, this.yourBoardDiv);
+    this.startBtn.addEventListener("click", this.startGame.bind(this));
+    this.enableButtons();
   }
   disableButtons() {
     this.randomBtn.setAttribute("disabled", "");
     this.startBtn.setAttribute("disabled", "");
+  }
+  enableButtons() {
+    this.randomBtn.removeAttribute("disabled");
+    this.startBtn.removeAttribute("disabled");
   }
   drawShips(player, boardDiv) {
     const shipDivs = boardDiv.querySelectorAll(".ship");
@@ -115,6 +130,24 @@ class UI {
       const [y, x] = this.getCoordsFromElement(square);
       square.textContent = player.board.getSquareState(y, x);
     });
+  }
+  gameOver(result) {
+    this.announcementEl.textContent = `${result} wins!`.toUpperCase();
+    this.startBtn.removeAttribute("disabled");
+    this.startBtn.textContent = "Start a new game";
+    this.startBtn.removeEventListener("click", this.startGame.bind(this));
+    this.startBtn.addEventListener("click", this.startNewGame.bind(this));
+  }
+  makeGrid(boardDiv) {
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 10; x++) {
+        const div = document.createElement("div");
+        div.className = "square";
+        div.style["grid-area"] = `${y + 1} / ${x + 1}`;
+        div.setAttribute("data-coords", `${y},${x}`);
+        boardDiv.appendChild(div);
+      }
+    }
   }
 }
 
