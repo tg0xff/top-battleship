@@ -7,26 +7,63 @@ class Game {
     this.player2 = new Player(false);
     this.gameHasStarted = false;
     this.isPlayer1Turn = true;
+  }
+  randomizeBoard() {
+    if (this.gameHasStarted) return;
+    this.player1.board.placeShipsRandomly();
+  }
+  sendAttack(y, x) {
+    if (
+      !this.gameHasStarted ||
+      !this.isPlayer1Turn ||
+      !this.player2.board.canBeAttacked(y, x)
+    )
+      return;
+    this.player2.board.receiveAttack(y, x);
+    this.isPlayer1Turn = false;
+    this.makeCPUAttack();
+  }
+  makeCPUAttack() {
+    let x;
+    let y;
+    do {
+      x = Math.floor(Math.random() * 10);
+      y = Math.floor(Math.random() * 10);
+    } while (!this.player1.board.canBeAttacked(y, x));
+    this.player1.board.receiveAttack(y, x);
+    this.isPlayer1Turn = true;
+  }
+}
 
-    this.player1BoardDiv = document.querySelector("#player-board");
-    this.player2BoardDiv = document.querySelector("#opponent-board");
+class UI {
+  constructor() {
+    this.game = new Game();
+
+    this.yourBoardDiv = document.querySelector("#your-board");
+    this.theirBoardDiv = document.querySelector("#their-board");
     this.randomBtn = document.querySelector("#random");
     this.startBtn = document.querySelector("#start");
 
-    this.player2BoardDiv.addEventListener("click", (e) => this.sendAttack(e));
-    this.randomBtn.addEventListener("click", this.randomizeBoard.bind(this));
+    this.theirBoardDiv.addEventListener("click", (e) => {
+      if (e.target.classList.contains("square")) {
+        const [y, x] = this.getCoordsFromElement(e.target);
+        this.game.sendAttack(y, x);
+        this.drawSquares(this.game.player2, this.theirBoardDiv);
+        this.drawSquares(this.game.player1, this.yourBoardDiv);
+      }
+    });
+    this.randomBtn.addEventListener("click", () => {
+      this.game.randomizeBoard();
+      this.drawShips(this.game.player1, this.yourBoardDiv);
+    });
     this.startBtn.addEventListener("click", () => {
       this.disableButtons();
-      this.gameHasStarted = true;
+      this.game.gameHasStarted = true;
     });
 
-    this.makeGrid(this.player1BoardDiv);
-    this.makeGrid(this.player2BoardDiv);
-    this.drawShips(this.player1, this.player1BoardDiv);
-  }
-  disableButtons() {
-    this.randomBtn.setAttribute("disabled", "");
-    this.startBtn.setAttribute("disabled", "");
+    this.makeGrid(this.yourBoardDiv);
+    this.makeGrid(this.theirBoardDiv);
+    this.drawShips(this.game.player1, this.yourBoardDiv);
   }
   makeGrid(boardDiv) {
     for (let y = 0; y < 10; y++) {
@@ -38,6 +75,10 @@ class Game {
         boardDiv.appendChild(div);
       }
     }
+  }
+  disableButtons() {
+    this.randomBtn.setAttribute("disabled", "");
+    this.startBtn.setAttribute("disabled", "");
   }
   drawShips(player, boardDiv) {
     const shipDivs = boardDiv.querySelectorAll(".ship");
@@ -56,11 +97,6 @@ class Game {
       boardDiv.appendChild(div);
     }
   }
-  randomizeBoard() {
-    if (this.gameHasStarted) return;
-    this.player1.board.placeShipsRandomly();
-    this.drawShips(this.player1, this.player1BoardDiv);
-  }
   getCoordsFromElement(element) {
     return element
       .getAttribute("data-coords")
@@ -74,31 +110,6 @@ class Game {
       square.textContent = player.board.getSquareState(y, x);
     });
   }
-  sendAttack(e) {
-    if (
-      !this.gameHasStarted ||
-      !this.isPlayer1Turn ||
-      !e.target.classList.contains("square")
-    )
-      return;
-    const [y, x] = this.getCoordsFromElement(e.target);
-    if (!this.player2.board.canBeAttacked(y, x)) return;
-    this.player2.board.receiveAttack(y, x);
-    this.drawSquares(this.player2, this.player2BoardDiv);
-    this.isPlayer1Turn = false;
-    this.makeCPUAttack();
-  }
-  makeCPUAttack() {
-    let x;
-    let y;
-    do {
-      x = Math.floor(Math.random() * 10);
-      y = Math.floor(Math.random() * 10);
-    } while (!this.player1.board.canBeAttacked(y, x));
-    this.player1.board.receiveAttack(y, x);
-    this.drawSquares(this.player1, this.player1BoardDiv);
-    this.isPlayer1Turn = true;
-  }
 }
 
-const game = new Game();
+const ui = new UI();
