@@ -64,3 +64,7 @@ h1 {
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+.announcement {
+  text-align: center;
+}
