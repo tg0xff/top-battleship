@@ -18,13 +18,14 @@ class Ship {
 }
 
 class Gameboard {
-  constructor(isHuman) {
+  constructor(isABot) {
+    this.isABot = isABot;
     this.ships = [];
     this.shipCount = 5;
-    if (isHuman) {
-      this.placeShipsDefault();
-    } else {
+    if (this.isABot) {
       this.placeShipsRandomly();
+    } else {
+      this.placeShipsDefault();
     }
   }
   makeBoardArray() {
@@ -61,32 +62,55 @@ class Gameboard {
       [1, -1],
       [-1, -1],
     ];
+    const nextMoves = [];
     for (const difference of differenceMatrix) {
       const b = y + difference[0];
       const a = x + difference[1];
-      if (b >= 0 && b <= 9 && a >= 0 && a <= 9 && this.boardArr[b][a] === EMPTY)
-        this.boardArr[b][a] = DISREGARDED;
+      if (b >= 0 && b <= 9 && a >= 0 && a <= 9) {
+        if (this.boardArr[b][a] === EMPTY) {
+          this.boardArr[b][a] = DISREGARDED;
+        } else if (this.isABot && this.boardArr[b][a] >= 0) {
+          nextMoves.push([b, a]);
+        }
+      }
     }
+    return nextMoves;
+  }
+  computeNextMoves(y, x) {
+    const differencesMatrix = [
+      [-1, 0],
+      [0, 1],
+      [1, 0],
+      [0, -1],
+    ];
+    const nextMoves = [];
+    for (const [c, d] of differencesMatrix) {
+      const b = y + c;
+      const a = x + d;
+      if (b >= 0 && b <= 9 && a >= 0 && a <= 9 && this.canBeAttacked(b, a))
+        nextMoves.push([b, a]);
+    }
+    return nextMoves;
   }
   receiveAttack(y, x) {
     const shipIndex = this.boardArr[y][x];
-    let returnVal;
+    let attackResult;
     if (shipIndex >= 0) {
       this.ships[shipIndex].hit();
       this.boardArr[y][x] = DAMAGED;
-      returnVal = "hit";
+      attackResult = "hit";
       if (this.ships[shipIndex].isSunk()) {
         this.shipCount--;
       }
     } else {
       this.boardArr[y][x] = HIT;
-      returnVal = "miss";
+      attackResult = "miss";
     }
-    this.markDisregarded(y, x);
+    const nextMoves = this.markDisregarded(y, x);
     if (this.shipCount === 0) {
-      returnVal = "gameover";
+      attackResult = "gameover";
     }
-    return returnVal;
+    return [attackResult, nextMoves];
   }
   areAdjacentSquaresEmpty(y, x) {
     function isSquareEmpty(square) {
@@ -192,8 +216,42 @@ class Gameboard {
 }
 
 export default class Player {
-  constructor(isHuman) {
-    this.isHuman = isHuman;
-    this.board = new Gameboard(isHuman);
+  constructor(isABot) {
+    this.board = new Gameboard(isABot);
+    this.nextCpuMoves = [];
+  }
+  receiveAttack(y, x) {
+    if (y === "random") {
+      return this.#receiveCpuAttack(y, x);
+    } else {
+      const [attackResult] = this.board.receiveAttack(y, x);
+      return attackResult;
+    }
+  }
+  #receiveCpuAttack() {
+    let keepGoing = true;
+    while (keepGoing) {
+      keepGoing = false;
+      let x;
+      let y;
+      if (this.nextCpuMoves.length) {
+        do {
+          [y, x] = this.nextCpuMoves.pop();
+        } while (!this.board.canBeAttacked(y, x));
+      } else {
+        do {
+          x = Math.floor(Math.random() * 10);
+          y = Math.floor(Math.random() * 10);
+        } while (!this.board.canBeAttacked(y, x));
+      }
+      const [attackResult, nextDiagonalMoves] = this.board.receiveAttack(y, x);
+      this.nextCpuMoves = nextDiagonalMoves.concat(this.nextCpuMoves);
+      if (attackResult === "gameover") return attackResult;
+      if (attackResult === "hit") {
+        const nextOrthogonalMoves = this.board.computeNextMoves(y, x);
+        this.nextCpuMoves = nextOrthogonalMoves.concat(this.nextCpuMoves);
+        keepGoing = true;
+      }
+    }
   }
 }

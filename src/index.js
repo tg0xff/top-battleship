@@ -3,8 +3,8 @@ import Player from "./classes.js";
 
 class Game {
   constructor() {
-    this.player1 = new Player(true);
-    this.player2 = new Player(false);
+    this.player1 = new Player(false);
+    this.player2 = new Player(true);
     this.gameHasStarted = false;
     this.isPlayer1Turn = true;
   }
@@ -20,31 +20,17 @@ class Game {
     )
       return;
     this.isPlayer1Turn = false;
-    const p1AttackResult = this.player2.board.receiveAttack(y, x);
+    const p1AttackResult = this.player2.receiveAttack(y, x);
     if (p1AttackResult === "gameover") {
       return "player 1";
     }
     if (p1AttackResult === "miss") {
-      const p2AttackResult = this.makeCPUAttack();
+      const p2AttackResult = this.player1.receiveAttack("random");
       if (p2AttackResult === "gameover") {
         return "player 2";
       }
     }
     this.isPlayer1Turn = true;
-  }
-  makeCPUAttack() {
-    let keepGoing = true;
-    while (keepGoing) {
-      let x;
-      let y;
-      do {
-        x = Math.floor(Math.random() * 10);
-        y = Math.floor(Math.random() * 10);
-      } while (!this.player1.board.canBeAttacked(y, x));
-      const attackResult = this.player1.board.receiveAttack(y, x);
-      if (attackResult === "gameover") return attackResult;
-      keepGoing = attackResult === "hit";
-    }
   }
 }
 
