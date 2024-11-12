@@ -10,7 +10,7 @@ class Game {
   }
   randomizeBoard() {
     if (this.gameHasStarted) return;
-    this.player1.board.placeShipsRandomly();
+    this.player1.board.randomize();
   }
   sendAttack(y, x) {
     if (
