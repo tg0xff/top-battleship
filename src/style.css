@@ -52,8 +52,8 @@ h1 {
 }
 
 .ship {
-  z-index: -1;
   background-color: #00ff0088;
+  cursor: move;
 }
 
 .their-board {
@@ -62,4 +62,8 @@ h1 {
 
 .announcement {
   text-align: center;
+}
+
+.ship.to-back {
+  z-index: -1;
 }
