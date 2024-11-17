@@ -1,4 +1,4 @@
-import { placeShipsDefault, placeShipsRandomly } from "./place-ships.js";
+import placeShipsRandomly from "./place-ships.js";
 
 export const EMPTY = -1;
 const DISREGARDED = -2;
@@ -23,9 +23,7 @@ class Gameboard {
   constructor(isABot) {
     this.isABot = isABot;
     this.shipCount = 5;
-    [this.boardArr, this.ships] = this.isABot
-      ? placeShipsRandomly()
-      : placeShipsDefault();
+    [this.boardArr, this.ships] = placeShipsRandomly();
   }
   getSquareState(y, x) {
     switch (this.boardArr[y][x]) {

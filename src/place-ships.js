@@ -85,7 +85,7 @@ function placeShip(boardArr, ships, index, ship) {
   ships.push(ship);
 }
 
-export function placeShipsRandomly() {
+export default function placeShipsRandomly() {
   const ships = [];
   const boardArr = makeBoardArray();
   const shipLengths = [5, 4, 3, 3, 2];
@@ -98,25 +98,6 @@ export function placeShipsRandomly() {
       ship.y = Math.floor(Math.random() * 10);
     } while (!canBePlaced(boardArr, ship));
     placeShip(boardArr, ships, i, ship);
-  }
-  return [boardArr, ships];
-}
-
-export function placeShipsDefault() {
-  const ships = [];
-  const boardArr = makeBoardArray();
-  const shipLengths = [5, 4, 3, 3, 2];
-  let i = 0;
-  let x = 0;
-  while (i < 5) {
-    const ship = new Ship();
-    ship.length = shipLengths[i];
-    ship.isHorizontal = false;
-    ship.x = x;
-    ship.y = 0;
-    placeShip(boardArr, ships, i, ship);
-    i += 1;
-    x += 2;
   }
   return [boardArr, ships];
 }
