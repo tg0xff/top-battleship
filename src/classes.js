@@ -110,7 +110,7 @@ export default class Player {
   }
   receiveAttack(y, x) {
     if (y === "random") {
-      return this.#receiveCpuAttack(y, x);
+      return this.#receiveCpuAttack();
     } else {
       const [attackResult] = this.board.receiveAttack(y, x);
       return attackResult;
