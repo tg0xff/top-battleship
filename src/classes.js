@@ -1,4 +1,4 @@
-import placeShipsRandomly from "./place-ships.js";
+import placeShipsRandomly, { canBePlaced, placeShip } from "./place-ships.js";
 
 export const EMPTY = -1;
 const DISREGARDED = -2;
@@ -100,6 +100,20 @@ class Gameboard {
   }
   randomize() {
     [this.boardArr, this.ships] = placeShipsRandomly();
+  }
+  moveShip(shipId, y, x) {
+    const shipCopy = { ...this.ships[shipId] };
+    shipCopy.y = y;
+    shipCopy.x = x;
+    const shiplessBoard = this.boardArr.map((y) =>
+      y.map((x) => (x === shipId ? EMPTY : x)),
+    );
+    if (canBePlaced(shiplessBoard, shipCopy)) {
+      this.ships[shipId].y = y;
+      this.ships[shipId].x = x;
+      placeShip(shiplessBoard, shipId, this.ships[shipId]);
+      this.boardArr = shiplessBoard;
+    }
   }
 }
 
