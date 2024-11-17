@@ -5,16 +5,16 @@ class Game {
   constructor() {
     this.player1 = new Player(false);
     this.player2 = new Player(true);
-    this.gameHasStarted = false;
+    this.hasStarted = false;
     this.isPlayer1Turn = true;
   }
   randomizeBoard() {
-    if (this.gameHasStarted) return;
+    if (this.hasStarted) return;
     this.player1.board.randomize();
   }
   sendAttack(y, x) {
     if (
-      !this.gameHasStarted ||
+      !this.hasStarted ||
       !this.isPlayer1Turn ||
       !this.player2.board.canBeAttacked(y, x)
     )
@@ -66,7 +66,7 @@ class UI {
   }
   startGame() {
     this.disableButtons();
-    this.game.gameHasStarted = true;
+    this.game.hasStarted = true;
   }
   startNewGame() {
     this.announcementEl.textContent = "";
