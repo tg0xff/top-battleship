@@ -56,7 +56,7 @@ function checkSqrsVertical(boardArr, ship, n) {
   );
 }
 
-function canBePlaced(boardArr, ship) {
+export function canBePlaced(boardArr, ship) {
   if (
     boardArr[ship.y][ship.x] !== EMPTY ||
     (ship.isHorizontal ? ship.x : ship.y) + ship.length > 10
@@ -70,7 +70,7 @@ function canBePlaced(boardArr, ship) {
   }
 }
 
-function placeShip(boardArr, ships, index, ship) {
+export function placeShip(boardArr, index, ship) {
   if (ship.isHorizontal) {
     const end = ship.x + ship.length;
     for (let i = ship.x; i < end; i++) {
@@ -82,7 +82,6 @@ function placeShip(boardArr, ships, index, ship) {
       boardArr[i][ship.x] = index;
     }
   }
-  ships.push(ship);
 }
 
 export default function placeShipsRandomly() {
@@ -97,7 +96,8 @@ export default function placeShipsRandomly() {
       ship.x = Math.floor(Math.random() * 10);
       ship.y = Math.floor(Math.random() * 10);
     } while (!canBePlaced(boardArr, ship));
-    placeShip(boardArr, ships, i, ship);
+    placeShip(boardArr, i, ship);
+    ships.push(ship);
   }
   return [boardArr, ships];
 }
