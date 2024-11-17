@@ -92,8 +92,10 @@ class UI {
     const shipDivs = boardDiv.querySelectorAll(".ship");
     shipDivs.forEach((div) => div.parentNode.removeChild(div));
 
-    for (const ship of player.board.ships) {
+    for (let i = 0; i < player.board.ships.length; i++) {
+      const ship = player.board.ships[i];
       const div = document.createElement("div");
+      div.setAttribute("data-ship-id", i.toString());
       div.className = "ship";
       if (ship.isHorizontal) {
         div.style["grid-area"] =
