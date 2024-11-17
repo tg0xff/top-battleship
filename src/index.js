@@ -67,6 +67,7 @@ class UI {
   startGame() {
     this.disableButtons();
     this.game.hasStarted = true;
+    this.drawShips(this.game.player1, this.yourBoardDiv);
   }
   startNewGame() {
     this.announcementEl.textContent = "";
@@ -100,6 +101,12 @@ class UI {
       } else {
         div.style["grid-area"] =
           `${ship.y + 1} / ${ship.x + 1} / span ${ship.length}`;
+      }
+      if (this.game.hasStarted) {
+        div.setAttribute("draggable", "false");
+        div.classList.add("to-back");
+      } else {
+        div.setAttribute("draggable", "true");
       }
       boardDiv.appendChild(div);
     }
