@@ -60,11 +60,6 @@ h1 {
   cursor: pointer;
 }
 
-.greyed-board {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
 .announcement {
   text-align: center;
 }
