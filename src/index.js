@@ -38,6 +38,7 @@ class UI {
   constructor() {
     this.game = new Game();
 
+    this.draggedShipId = null;
     this.announcementEl = document.querySelector("#announcement");
     this.yourBoardDiv = document.querySelector("#your-board");
     this.theirBoardDiv = document.querySelector("#their-board");
@@ -54,6 +55,28 @@ class UI {
         this.drawSquares(this.game.player2, this.theirBoardDiv);
         this.drawSquares(this.game.player1, this.yourBoardDiv);
         if (result) this.gameOver(result);
+      }
+    });
+    // This event listener is needed to enable dropping events, which
+    // browsers disable by default.
+    this.yourBoardDiv.addEventListener(
+      "dragover",
+      (e) => e.preventDefault(),
+      false,
+    );
+    this.yourBoardDiv.addEventListener("dragstart", (e) => {
+      if (e.target.classList.contains("ship")) {
+        this.draggedShipId = +e.target.getAttribute("data-ship-id");
+      }
+    });
+    this.yourBoardDiv.addEventListener("dragend", () => {
+      this.draggedShipId = null;
+    });
+    this.yourBoardDiv.addEventListener("drop", (e) => {
+      if (e.target.classList.contains("square")) {
+        const [y, x] = this.getCoordsFromElement(e.target);
+        this.game.player1.board.moveShip(this.draggedShipId, y, x);
+        this.drawShips(this.game.player1, this.yourBoardDiv);
       }
     });
     this.randomBtn.addEventListener("click", () => {
