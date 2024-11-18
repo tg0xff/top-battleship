@@ -38,7 +38,10 @@ class UI {
   constructor() {
     this.game = new Game();
 
-    this.draggedShipId = null;
+    this.draggedShip = {
+      id: null,
+      clickOriginOffset: null,
+    };
     this.announcementEl = document.querySelector("#announcement");
     this.yourBoardDiv = document.querySelector("#your-board");
     this.theirBoardDiv = document.querySelector("#their-board");
@@ -68,18 +71,37 @@ class UI {
   shipDragover(e) {
     e.preventDefault();
   }
+  shipMousedown(e) {
+    if (!e.target.classList.contains("ship")) return;
+    this.draggedShip["clickOriginOffset"] =
+      e.target.offsetWidth > e.target.offsetHeight
+        ? e.offsetX / e.target.offsetWidth
+        : e.offsetY / e.target.offsetHeight;
+  }
   shipDragstart(e) {
     if (!e.target.classList.contains("ship")) return;
-    this.draggedShipId = +e.target.getAttribute("data-ship-id");
-  }
-  shipDragend() {
-    this.draggedShipId = null;
+    this.draggedShip["id"] = +e.target.getAttribute("data-ship-id");
   }
   shipDrop(e) {
     if (!e.target.classList.contains("square")) return;
-    const [y, x] = this.getCoordsFromElement(e.target);
-    this.game.player1.board.moveShip(this.draggedShipId, y, x);
+    const ship = this.game.player1.board.ships[this.draggedShip["id"]];
+    const originOffset = Math.floor(
+      ship.length * this.draggedShip["clickOriginOffset"],
+    );
+    let [y, x] = this.getCoordsFromElement(e.target);
+    if (ship.isHorizontal) {
+      x -= originOffset;
+    } else {
+      y -= originOffset;
+    }
+    this.game.player1.board.moveShip(this.draggedShip["id"], y, x);
     this.drawShips(this.game.player1, this.yourBoardDiv);
+  }
+  shipDragend() {
+    this.draggedShip = {
+      id: null,
+      clickSquareOffset: null,
+    };
   }
   enableDragAndDrop() {
     // This event listener is needed to enable dropping events, which
@@ -88,6 +110,10 @@ class UI {
       "dragover",
       this.shipDragover.bind(this),
       false,
+    );
+    this.yourBoardDiv.addEventListener(
+      "mousedown",
+      this.shipMousedown.bind(this),
     );
     this.yourBoardDiv.addEventListener(
       "dragstart",
@@ -100,6 +126,10 @@ class UI {
     this.yourBoardDiv.removeEventListener(
       "dragover",
       this.shipDragover.bind(this),
+    );
+    this.yourBoardDiv.removeEventListener(
+      "mousedown",
+      this.shipMousedown.bind(this),
     );
     this.yourBoardDiv.removeEventListener(
       "dragstart",
