@@ -57,28 +57,6 @@ class UI {
         if (result) this.gameOver(result);
       }
     });
-    // This event listener is needed to enable dropping events, which
-    // browsers disable by default.
-    this.yourBoardDiv.addEventListener(
-      "dragover",
-      (e) => e.preventDefault(),
-      false,
-    );
-    this.yourBoardDiv.addEventListener("dragstart", (e) => {
-      if (e.target.classList.contains("ship")) {
-        this.draggedShipId = +e.target.getAttribute("data-ship-id");
-      }
-    });
-    this.yourBoardDiv.addEventListener("dragend", () => {
-      this.draggedShipId = null;
-    });
-    this.yourBoardDiv.addEventListener("drop", (e) => {
-      if (e.target.classList.contains("square")) {
-        const [y, x] = this.getCoordsFromElement(e.target);
-        this.game.player1.board.moveShip(this.draggedShipId, y, x);
-        this.drawShips(this.game.player1, this.yourBoardDiv);
-      }
-    });
     this.randomBtn.addEventListener("click", () => {
       this.game.randomizeBoard();
       this.drawShips(this.game.player1, this.yourBoardDiv);
@@ -86,11 +64,52 @@ class UI {
     this.startBtn.addEventListener("click", this.startGame.bind(this));
 
     this.drawShips(this.game.player1, this.yourBoardDiv);
+    this.enableDragAndDrop();
+  }
+  shipDragover(e) {
+    e.preventDefault();
+  }
+  shipDragstart(e) {
+    if (e.target.classList.contains("ship")) {
+      this.draggedShipId = +e.target.getAttribute("data-ship-id");
+    }
+  }
+  shipDragend() {
+    this.draggedShipId = null;
+  }
+  shipDrop(e) {
+    if (e.target.classList.contains("square")) {
+      const [y, x] = this.getCoordsFromElement(e.target);
+      this.game.player1.board.moveShip(this.draggedShipId, y, x);
+      this.drawShips(this.game.player1, this.yourBoardDiv);
+    }
+  }
+  enableDragAndDrop() {
+    // This event listener is needed to enable dropping events, which
+    // browsers disable by default.
+    this.yourBoardDiv.addEventListener(
+      "dragover",
+      this.shipDragover.bind(this),
+      false,
+    );
+    this.yourBoardDiv.addEventListener("dragstart", this.shipDragstart.bind(this));
+    this.yourBoardDiv.addEventListener("dragend", this.shipDragend.bind(this));
+    this.yourBoardDiv.addEventListener("drop", this.shipDrop.bind(this));
+  }
+  disableDragAndDrop() {
+    this.yourBoardDiv.removeEventListener("dragover", this.shipDragover.bind(this));
+    this.yourBoardDiv.removeEventListener(
+      "dragstart",
+      this.shipDragstart.bind(this),
+    );
+    this.yourBoardDiv.removeEventListener("dragend", this.shipDragend.bind(this));
+    this.yourBoardDiv.removeEventListener("drop", this.shipDrop.bind(this));
   }
   startGame() {
     this.disableButtons();
     this.game.hasStarted = true;
     this.drawShips(this.game.player1, this.yourBoardDiv);
+    this.disableDragAndDrop();
   }
   startNewGame() {
     this.announcementEl.textContent = "";
