@@ -1,4 +1,4 @@
-((nil . ((format-all-formaters . (("JavaScript" (prettier))
+((nil . ((format-all-formatters . (("JavaScript" (prettier))
                                   ("HTML" (prettier))
                                   ("CSS" (prettier))))))
  (js-ts-mode . ((format-all-mode . t)))
