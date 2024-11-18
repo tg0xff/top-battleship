@@ -49,13 +49,12 @@ class UI {
     this.makeGrid(this.theirBoardDiv);
 
     this.theirBoardDiv.addEventListener("click", (e) => {
-      if (e.target.classList.contains("square")) {
-        const [y, x] = this.getCoordsFromElement(e.target);
-        const result = this.game.sendAttack(y, x);
-        this.drawSquares(this.game.player2, this.theirBoardDiv);
-        this.drawSquares(this.game.player1, this.yourBoardDiv);
-        if (result) this.gameOver(result);
-      }
+      if (!e.target.classList.contains("square")) return;
+      const [y, x] = this.getCoordsFromElement(e.target);
+      const result = this.game.sendAttack(y, x);
+      this.drawSquares(this.game.player2, this.theirBoardDiv);
+      this.drawSquares(this.game.player1, this.yourBoardDiv);
+      if (result) this.gameOver(result);
     });
     this.randomBtn.addEventListener("click", () => {
       this.game.randomizeBoard();
@@ -70,19 +69,17 @@ class UI {
     e.preventDefault();
   }
   shipDragstart(e) {
-    if (e.target.classList.contains("ship")) {
-      this.draggedShipId = +e.target.getAttribute("data-ship-id");
-    }
+    if (!e.target.classList.contains("ship")) return;
+    this.draggedShipId = +e.target.getAttribute("data-ship-id");
   }
   shipDragend() {
     this.draggedShipId = null;
   }
   shipDrop(e) {
-    if (e.target.classList.contains("square")) {
-      const [y, x] = this.getCoordsFromElement(e.target);
-      this.game.player1.board.moveShip(this.draggedShipId, y, x);
-      this.drawShips(this.game.player1, this.yourBoardDiv);
-    }
+    if (!e.target.classList.contains("square")) return;
+    const [y, x] = this.getCoordsFromElement(e.target);
+    this.game.player1.board.moveShip(this.draggedShipId, y, x);
+    this.drawShips(this.game.player1, this.yourBoardDiv);
   }
   enableDragAndDrop() {
     // This event listener is needed to enable dropping events, which
@@ -92,17 +89,26 @@ class UI {
       this.shipDragover.bind(this),
       false,
     );
-    this.yourBoardDiv.addEventListener("dragstart", this.shipDragstart.bind(this));
+    this.yourBoardDiv.addEventListener(
+      "dragstart",
+      this.shipDragstart.bind(this),
+    );
     this.yourBoardDiv.addEventListener("dragend", this.shipDragend.bind(this));
     this.yourBoardDiv.addEventListener("drop", this.shipDrop.bind(this));
   }
   disableDragAndDrop() {
-    this.yourBoardDiv.removeEventListener("dragover", this.shipDragover.bind(this));
+    this.yourBoardDiv.removeEventListener(
+      "dragover",
+      this.shipDragover.bind(this),
+    );
     this.yourBoardDiv.removeEventListener(
       "dragstart",
       this.shipDragstart.bind(this),
     );
-    this.yourBoardDiv.removeEventListener("dragend", this.shipDragend.bind(this));
+    this.yourBoardDiv.removeEventListener(
+      "dragend",
+      this.shipDragend.bind(this),
+    );
     this.yourBoardDiv.removeEventListener("drop", this.shipDrop.bind(this));
   }
   startGame() {
