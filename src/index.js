@@ -94,6 +94,10 @@ class UI {
     } else {
       y -= originOffset;
     }
+    // Prevent out of bounds ship origins. Upper-bound checks aren't
+    // needed, those are already taken care of by canBePlaced().
+    x = (x < 0) ? 0 : x;
+    y = (y < 0) ? 0 : y;
     this.game.player1.board.moveShip(this.draggedShip["id"], y, x);
     this.drawShips(this.game.player1, this.yourBoardDiv);
   }
