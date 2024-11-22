@@ -32,6 +32,23 @@ class Game {
     }
     this.isPlayer1Turn = true;
   }
+  moveShip(draggedShip, y, x) {
+    const player = this.isPlayer1Turn ? this.player1 : this.player2;
+    const ship = player.board.ships[draggedShip["id"]];
+    const originOffset = Math.floor(
+      ship.length * draggedShip["clickOriginOffset"],
+    );
+    if (ship.isHorizontal) {
+      x -= originOffset;
+    } else {
+      y -= originOffset;
+    }
+    // Prevent out of bounds ship origins. Upper-bound checks aren't
+    // needed, those are already taken care of by canBePlaced().
+    x = x < 0 ? 0 : x;
+    y = y < 0 ? 0 : y;
+    player.board.moveShip(draggedShip["id"], y, x);
+  }
 }
 
 class UI {
@@ -84,21 +101,8 @@ class UI {
   }
   shipDrop(e) {
     if (!e.target.classList.contains("square")) return;
-    const ship = this.game.player1.board.ships[this.draggedShip["id"]];
-    const originOffset = Math.floor(
-      ship.length * this.draggedShip["clickOriginOffset"],
-    );
-    let [y, x] = this.getCoordsFromElement(e.target);
-    if (ship.isHorizontal) {
-      x -= originOffset;
-    } else {
-      y -= originOffset;
-    }
-    // Prevent out of bounds ship origins. Upper-bound checks aren't
-    // needed, those are already taken care of by canBePlaced().
-    x = (x < 0) ? 0 : x;
-    y = (y < 0) ? 0 : y;
-    this.game.player1.board.moveShip(this.draggedShip["id"], y, x);
+    const [y, x] = this.getCoordsFromElement(e.target);
+    this.game.moveShip(this.draggedShip, y, x);
     this.drawShips(this.game.player1, this.yourBoardDiv);
   }
   shipDragend() {
